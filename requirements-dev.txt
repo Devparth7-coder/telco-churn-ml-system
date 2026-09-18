@@ -1,0 +1,7 @@
+# Development / CI tooling on top of requirements.txt
+-r requirements.txt
+pytest==9.0.3
+httpx==0.28.1
+optuna==5.0.0
+ruff==0.14.10
+mypy==1.19.0

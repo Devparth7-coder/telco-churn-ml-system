@@ -1,0 +1,63 @@
+# ---------------------------------------------------------------------------
+# telco-churn-ml-system configuration
+#
+# Non-secret configuration only. Secrets (API auth tokens, DB credentials...)
+# MUST come from environment variables — see .env.example.
+# Environment overrides: CONFIG_PATH, RAW_DATA_PATH, PROCESSED_DIR, MODEL_DIR,
+# PREDICTION_LOG_PATH, LOG_LEVEL, API_HOST, API_PORT.
+# ---------------------------------------------------------------------------
+project:
+  name: "telco-churn-ml-system"
+  version: "1.0.0"
+
+data:
+  raw_path: "data/raw/Telco-Customer-Churn.csv"
+  processed_dir: "data/processed"
+  source_url: "https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv"
+  sha256: "16320c9c1ec72448db59aa0a26a0b95401046bef5d02fd3aeb906448e3055e91"
+  target: "Churn"
+  id_column: "customerID"
+
+split:
+  # No temporal column exists in this dataset, so a stratified random split is
+  # used (documented in the leakage audit). validation_size is expressed as a
+  # fraction of the remaining (post-test-split) data, yielding ~15% overall.
+  test_size: 0.15
+  validation_size: 0.1765
+  stratify: true
+
+training:
+  random_state: 42
+  cv_folds: 5
+  n_trials_lgbm: 30
+  n_trials_hgb: 25
+  n_trials_rf: 20
+  n_trials_lr: 12
+
+evaluation:
+  primary_metric: "f1"          # F1 on the churn (positive) class
+  threshold_metric: "f1"        # decision threshold chosen to maximise this
+  min_improvement_over_baseline: 0.05
+
+model:
+  # Evaluated in this order; any candidate whose library is unavailable is
+  # skipped with a warning instead of failing the run.
+  candidates: ["lightgbm", "hist_gb", "random_forest", "logreg"]
+  models_dir: "models"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  rate_limit_per_minute: 120    # per client IP, fixed window
+  max_batch_size: 64
+  max_body_bytes: 262144        # 256 KiB request body cap
+  cors_origins: []              # empty = no CORS enabled
+
+monitoring:
+  prediction_log_path: "data/prediction_logs/predictions.jsonl"
+  psi_warning: 0.10
+  psi_alert: 0.20
+  drift_min_samples: 50
+
+logging:
+  level: "INFO"

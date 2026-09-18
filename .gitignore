@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Secrets & environment
+.env
+
+# Data & artifacts (version via registry, never commit binaries)
+data/raw/*
+data/interim/*
+data/processed/*
+data/prediction_logs/*
+models/*.joblib
+models/*.json
+!data/**/.gitkeep
+
+# Reports are generated
+reports/figures/*
+reports/evaluation/*
+
+# Editor/OS
+.DS_Store
+.idea/
+.vscode/

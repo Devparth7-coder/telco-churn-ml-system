@@ -1,0 +1,33 @@
+# Runtime dependencies — pinned for reproducible builds.
+# Regenerate intentionally: pip install, verify tests, then re-pin.
+
+# --- Core ML -----------------------------------------------------------------
+scikit-learn==1.6.1
+numpy==2.3.5
+scipy==1.17.1
+pandas==2.2.3
+lightgbm==4.7.0
+joblib==1.5.3
+
+# --- Data validation -----------------------------------------------------------
+pandera==0.33.1
+
+# --- API -----------------------------------------------------------------------
+fastapi==0.141.1
+uvicorn==0.53.0
+pydantic==2.13.4
+pydantic-settings==2.15.0
+starlette==1.6.0
+anyio==4.14.2
+annotated-types==0.7.0
+pydantic-core==2.46.4
+
+# --- Config / ingestion ----------------------------------------------------------
+PyYAML==6.0.3
+requests==2.33.0
+
+# --- Tuning (training pipeline) ---------------------------------------------------
+optuna==5.0.0
+
+# --- Reporting (EDA figures, training reports) ------------------------------------
+matplotlib==3.10.9

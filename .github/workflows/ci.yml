@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install ruff
+      - run: ruff check src tests
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install mypy -r requirements.txt
+      - run: mypy || true   # advisory until typing coverage is complete
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+      - name: Fetch dataset (checksum-verified)
+        run: python -m src.data.ingestion
+      - name: Train model (validation gates run here)
+        run: python -m src.models.train
+      - name: Run tests (incl. production-artifact regression gate)
+        run: pytest -m "integration or not integration"
+
+  build-image:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch dataset
+        run: python -m src.data.ingestion
+      - name: Train model for the image
+        run: pip install -r requirements.txt && python -m src.models.train
+      - name: Build container
+        run: docker build -t telco-churn-api:${{ github.sha }} .
