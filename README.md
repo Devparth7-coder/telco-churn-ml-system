@@ -9,6 +9,19 @@ suite, live API smoke tests, drift monitor); results below are measured, not pro
 
 ---
 
+## 🎬 Watch It Work
+
+Two recordings captured from the **actually running system** — no slides, nothing simulated.
+Both video files live at the repository root (the `videos/` folder keeps the capture scripts
+that produced them).
+
+| # | Video | What you'll see |
+|---|-------|-----------------|
+| 1 | [**Explanation — end-to-end walkthrough**](model-explained.mp4) (3:26) | The full system explained: checksum-verified ingestion → leakage-safe preprocessing → Optuna tuning → threshold selection → one-time test evaluation → hardened API → PSI drift monitoring |
+| 2 | [**Live API docs in action**](telco-live.mp4) (0:49) | A real browser driving the Swagger UI of the live FastAPI service: `/health` · `/ready` · `/version`, an unauthorized call → **401**, bearer-token authorize, a live prediction → **200**, batch scoring → **200**, a malformed payload → **422**, and the rate limiter → **429** — every response panel is the service's real answer |
+
+---
+
 ## 1. Overview
 
 | | |
@@ -129,6 +142,8 @@ telco-churn-system/
 ├── Makefile
 ├── requirements.txt / requirements-dev.txt   # fully pinned
 ├── pyproject.toml               # pytest / ruff / mypy config
+├── telco_churn_explainer.mp4    # video 1 — end-to-end explanation (3:26)
+├── telco_churn_api_docs_live.mp4 # video 2 — live Swagger UI session (0:49)
 └── .env.example
 ```
 
